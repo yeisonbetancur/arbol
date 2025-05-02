@@ -1,4 +1,7 @@
-#include<iostream>
+#include <iostream>
+#include <windows.h>
+#include <iomanip>
+#include <conio.h>  
 using namespace std;
 
 struct Nodo{
@@ -8,7 +11,12 @@ struct Nodo{
 };
 
 
-
+void gotoxy(int x, int y) {
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
 
 void agregarNodo(Nodo** raiz,int x){
 	Nodo* nuevo=new Nodo;
@@ -64,6 +72,39 @@ void imInorden(Nodo *p){
 		imInorden(p->der);
 	}
 }
+
+void dibujarArbol(Nodo* raiz, int x, int y, int espacio) {
+    if (raiz == NULL) {
+        return;
+    }
+
+    // Dibuja el nodo (su valor)
+    gotoxy(x, y);
+    cout << raiz->info;
+
+    // Dibuja las ramas hacia los hijos
+    if (raiz->izq) {
+        // Dibuja la rama izquierda
+        gotoxy(x - espacio / 2, y + 2);
+        cout << "/";
+        dibujarArbol(raiz->izq, x - espacio, y + 3, espacio / 2);
+    }
+
+    if (raiz->der) {
+        // Dibuja la rama derecha
+        gotoxy(x + espacio / 2, y + 2);
+        cout << "\\";
+        dibujarArbol(raiz->der, x + espacio, y + 3, espacio / 2);
+    }
+}
+
+void controlarArbol(Nodo* raiz){
+	system("CLS");
+	dibujarArbol(raiz, 40, 1,10);
+	cout<<"\nPresiona cualquier tecla para continuar\n";
+	getch();
+}
+
 int main(){
 	int x;
 	Nodo *raiz=NULL;
@@ -78,6 +119,7 @@ int main(){
 		switch(x){
 			case 1: agregarValor(&raiz);break;
 			case 2: imInorden(raiz);break;
+			case 3: controlarArbol(raiz);
 		}
 	}while(x!=4);
 }
